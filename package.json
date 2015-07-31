@@ -7,7 +7,7 @@
     "title": "node-webkit demo",
     "toolbar": true,
     "width": 718,
-    "height": 650,
+    "height": 800,
     "resizable": true,
     "position": "mouse"
   }
