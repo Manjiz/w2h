@@ -1,0 +1,33 @@
+<!doctype html>
+<head>
+<meta charset="utf-8" />
+<title>WTH v0.2.0 - 转Word为HTML</title>
+<link rel="stylesheet" href="kd/themes/default/default.css" />
+<script charset="utf-8" src="kd/kindeditor.js"></script>
+<script charset="utf-8" src="kd/zh_CN.js"></script>
+<script>
+	KindEditor.ready(function(K) {
+		K.create('#content1', {
+			items : ['fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'link', 'source'],
+			height : "470px",
+			resizeType : 0
+		});
+	});
+</script>
+<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="css/topcoat-desktop-light.css">
+</head>
+
+<div class="btn-wrap"><button>选择模板</button><input id="selectTpl" type="file"></div><span class="dir-show dir-show-selectTpl"></span>
+<br>
+<div class="btn-wrap"><button>存储为...</button><input id="saveas" type="file" nwdirectory></div><span class="dir-show dir-show-saveas"></span>
+<br>
+<label class="inp-label">发布目录名：<input id="ftpdir" class="topcoat-text-input" type="text" placeholder="英文字母/短横线"></label>
+<label class="inp-label">页面标题：<input id="title" class="topcoat-text-input" type="text"></label>
+<label class="inp-label">图片文件夹名：<input id="imgdir" class="topcoat-text-input" type="text"></label>
+
+<textarea id="content1" name="content" style="width:700px;height:200px;visibility:hidden;"></textarea>
+<div id="pseudo-content"><!--伪存放编辑器内容的DOM--></div>
+
+<script src="js/jquery-2.1.4.min.js"></script>
+<script src="js/main.js"></script>

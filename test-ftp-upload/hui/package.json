@@ -1,0 +1,14 @@
+﻿{
+  "main": "kd.html",
+  "name": "nw-demo",
+  "description": "word to html",
+  "version": "0.1.0",
+  "window": {
+    "title": "node-webkit demo",
+    "toolbar": true,
+    "width": 718,
+    "height": 650,
+    "resizable": true,
+    "position": "mouse"
+  }
+}
