@@ -110,7 +110,7 @@ $('#ftpupload').on('click', function() {
  *
  */
 function ftpUpload( sourceDir, targetDir ) {
-    var Ftp = new JSFtp(/*防信息泄漏*/)
+    var Ftp = new JSFtp({host: '172.25.34.21',user: 'c2c_design_ui',pass: 'c2c_design_ui'})
     Ftp.raw.mkd(targetDir + '/' + sourceDir.match(/\/?([^\/]*)$/)[1], function(err, data) {
         // if (err) throw err;
         Ftp.destroy();
@@ -120,7 +120,7 @@ function ftpUpload( sourceDir, targetDir ) {
         function walk(sourceDir, targetDir) {
             var dirList = fs.readdirSync(sourceDir);
             async.eachLimit(dirList, 1, function(item, cb) {
-                var Ftp = new JSFtp(/*防信息泄漏*/)
+                var Ftp = new JSFtp({host: '172.25.34.21',user: 'c2c_design_ui',pass: 'c2c_design_ui'})
                 if(fs.statSync(sourceDir + '/' + item).isDirectory()){
                     Ftp.raw.mkd(targetDir + '/' + item, function(err, data) {
                         Ftp.destroy();
