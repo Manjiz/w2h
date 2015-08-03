@@ -3,7 +3,7 @@
 <meta charset="utf-8" />
 <title>WTH v0.2.0 - 转Word为HTML</title>
 <link rel="stylesheet" href="kd/themes/default/default.css" />
-<script charset="utf-8" src="kd/kindeditor.js"></script>
+<script charset="utf-8" src="kd/kindeditor-min.js"></script>
 <script charset="utf-8" src="kd/zh_CN.js"></script>
 <script>
 	KindEditor.ready(function(K) {
@@ -14,14 +14,14 @@
 		});
 	});
 </script>
-<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 
 <div class="btn-wrap"><button>选择模板</button><input id="selectTpl" type="file"></div><span class="dir-show dir-show-selectTpl"></span>
 <br>
 <div class="btn-wrap"><button>存储为...</button><input id="saveas" type="file" nwdirectory></div><span class="dir-show dir-show-saveas"></span>
 <br>
-<label class="inp-label">FTP发布目录名：<input id="proj-name" type="text" placeholder="英文字母/短横线"></label>
+<label class="inp-label">FTP发布目录名：<input id="proj-name" type="text" placeholder="字母/数字/短横线"></label>
 <label class="inp-label">页面标题：<input id="title" type="text"></label>
 <label class="inp-label">图片文件夹名：<input id="imgdir" type="text"></label>
 

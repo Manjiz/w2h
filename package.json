@@ -7,8 +7,8 @@
     "title": "node-webkit demo",
     "toolbar": true,
     "width": 718,
-    "height": 800,
-    "resizable": true,
+    "height": 690,
+    "resizable": false,
     "position": "mouse"
   }
 }

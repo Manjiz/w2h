@@ -1,25 +1,24 @@
 ﻿var fs = require('fs'),
-    gulp = require('gulp'),
-    gulp = require('gulp-uglify'),
     JSFtp = require('jsftp')
     gui = require('nw.gui'),
+    async = require('async'),
     pseudoContent = document.querySelector('#pseudo-content');
 
-var menubar = new gui.Menu( {type: 'menubar'} );
-var sub1 = new gui.Menu();
-sub1.append(new gui.MenuItem({
-    label: '关于',
-    click: function() {
+// var menubar = new gui.Menu( {type: 'menubar'} );
+// var sub1 = new gui.Menu();
+// sub1.append(new gui.MenuItem({
+//     label: '关于',
+//     click: function() {
 
-    }
-}))
-menubar.append(new gui.MenuItem( {label: '帮助', submenu: sub1} ));
-gui.Window.get().menu = menubar;
-gui.Window.get().on('close', function() {
-    this.hide(); // Pretend to be closed already
-    // ...
-    this.close(true);
-});
+//     }
+// }))
+// menubar.append(new gui.MenuItem( {label: '帮助', submenu: sub1} ));
+// gui.Window.get().menu = menubar;
+// gui.Window.get().on('close', function() {
+//     this.hide(); // Pretend to be closed already
+//     // ...
+//     this.close(true);
+// });
 
 var config = {
     placeholder: '##content##',
@@ -48,6 +47,8 @@ function saveFiles( obj ) {
     if(tpl.indexOf(config.placeholder)<0) {
         return;
     }
+    // 新建目录
+    if(!fs.existsSync(saveDir)) { fs.mkdirSync(saveDir); }
     // 新建目录
     if(!fs.existsSync(saveDir+'/'+projName)) { fs.mkdirSync(saveDir+'/'+projName); }
     saveDir = saveDir+'/'+projName;
@@ -92,7 +93,7 @@ document.querySelector('#saveas').addEventListener("change", function (evt) {
 
 $('#ftpupload').on('click', function() {
     var projName = $('#proj-name').val().replace(/\s/g, '') || config.projName;
-    rmdirSync("locales/" + projName,function(e){ } )
+    rmdirSync('locales');   // 整个目录移除
     saveFiles( {
         projName: projName,
         saveDir: 'locales',
@@ -101,7 +102,6 @@ $('#ftpupload').on('click', function() {
     })
     ftpUpload('locales' + '/' + projName, '/newforward/static');
 })
-// ftpUpload( 'test-ftp-upload', '/newforward/static' );
 
 /**
  * FTP上传
@@ -110,7 +110,7 @@ $('#ftpupload').on('click', function() {
  *
  */
 function ftpUpload( sourceDir, targetDir ) {
-    var Ftp = new JSFtp({host: '172.25.34.21',user: 'c2c_design_ui',pass: 'c2c_design_ui'})
+    var Ftp = new JSFtp(/*防信息泄漏*/)
     Ftp.raw.mkd(targetDir + '/' + sourceDir.match(/\/?([^\/]*)$/)[1], function(err, data) {
         // if (err) throw err;
         Ftp.destroy();
@@ -119,26 +119,26 @@ function ftpUpload( sourceDir, targetDir ) {
         walk(sourceDir, targetDir);
         function walk(sourceDir, targetDir) {
             var dirList = fs.readdirSync(sourceDir);
-            console.log(dirList)
-            dirList.forEach(function(item) {
-                var Ftp = new JSFtp({host: '172.25.34.21',user: 'c2c_design_ui',pass: 'c2c_design_ui'})
+            async.eachLimit(dirList, 1, function(item, cb) {
+                var Ftp = new JSFtp(/*防信息泄漏*/)
                 if(fs.statSync(sourceDir + '/' + item).isDirectory()){
                     Ftp.raw.mkd(targetDir + '/' + item, function(err, data) {
-                        // if (err) throw err;
                         Ftp.destroy();
                         Ftp.raw.quit(function(err, data) {if (err) throw err;console.log("dir Bye!");});
                         walk(sourceDir + '/' + item, targetDir + '/' + item);
+                        cb();
                     });
                 }else{
                     Ftp.put(sourceDir + '/' + item, targetDir +'/' + item, function(err) {
                         if (err) throw err;
                         Ftp.destroy();
                         Ftp.raw.quit(function(err, data) {if (err) throw err;console.log(item, "file Bye!");});
+                        cb();
                     });
                 }
             })
         }
-    });  
+    });
 }
 
 // 删除非空目录
