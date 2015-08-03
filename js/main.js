@@ -2,6 +2,7 @@
     JSFtp = require('jsftp')
     gui = require('nw.gui'),
     async = require('async'),
+    svnClient = require('svn-spawn'),
     pseudoContent = document.querySelector('#pseudo-content');
 
 // var menubar = new gui.Menu( {type: 'menubar'} );
@@ -28,7 +29,7 @@ var config = {
 
 /**
  * 保存文件
- * @param {}
+ * @param {} 
  *      projName, saveDir, title, imgDir, tplDir
  */
 function saveFiles( obj ) {
@@ -44,8 +45,11 @@ function saveFiles( obj ) {
 
     // 读取模板
     tpl = fs.readFileSync(obj.tplDir || config.tplDir, {encoding : 'utf-8'});
+    console.log(obj.tplDir , config.tplDir);
     if(tpl.indexOf(config.placeholder)<0) {
-        return;
+        console.log(tpl)
+        tpl = fs.readFileSync(config.tplDir, {encoding : 'utf-8'});
+        console.log(tpl)
     }
     // 新建目录
     if(!fs.existsSync(saveDir)) { fs.mkdirSync(saveDir); }
@@ -75,13 +79,13 @@ function saveFiles( obj ) {
 
 // 选择模板
 document.querySelector('#selectTpl').addEventListener('change', function(evt) {
-	config.tplDir = this.value;
     $('.dir-show-selectTpl').text(this.value);
 })
 
 // 另存为
 document.querySelector('#saveas').addEventListener("change", function (evt) {
 	saveFiles( {
+        tplDir: $('#selectTpl').val(),
         projName: $('#proj-name').val().replace(/\s/g, ''),
         saveDir: this.value,
         title: $('#title').val(),
@@ -95,6 +99,7 @@ $('#ftpupload').on('click', function() {
     var projName = $('#proj-name').val().replace(/\s/g, '') || config.projName;
     rmdirSync('locales');   // 整个目录移除
     saveFiles( {
+        tplDir: $('#selectTpl').val(),
         projName: projName,
         saveDir: 'locales',
         title: $('#title').val(),
@@ -110,7 +115,7 @@ $('#ftpupload').on('click', function() {
  *
  */
 function ftpUpload( sourceDir, targetDir ) {
-    var Ftp = new JSFtp({host: '172.25.34.21',user: 'c2c_design_ui',pass: 'c2c_design_ui'})
+    var Ftp = new JSFtp({})
     Ftp.raw.mkd(targetDir + '/' + sourceDir.match(/\/?([^\/]*)$/)[1], function(err, data) {
         // if (err) throw err;
         Ftp.destroy();
@@ -120,7 +125,7 @@ function ftpUpload( sourceDir, targetDir ) {
         function walk(sourceDir, targetDir) {
             var dirList = fs.readdirSync(sourceDir);
             async.eachLimit(dirList, 1, function(item, cb) {
-                var Ftp = new JSFtp({host: '172.25.34.21',user: 'c2c_design_ui',pass: 'c2c_design_ui'})
+                var Ftp = new JSFtp({})
                 if(fs.statSync(sourceDir + '/' + item).isDirectory()){
                     Ftp.raw.mkd(targetDir + '/' + item, function(err, data) {
                         Ftp.destroy();
@@ -138,6 +143,26 @@ function ftpUpload( sourceDir, targetDir ) {
                 }
             })
         }
+    });
+}
+
+svnUpload();
+
+/**
+ * SVN上传
+ *
+ */
+function svnUpload() {
+    var svn = new svnClient({
+
+    })
+
+    svn.checkout("", function(err, data) {
+        console.log(data)
+    });
+
+    svn.update(function(err, data) {
+        console.log('updated');
     });
 }
 
